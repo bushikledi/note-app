@@ -1,7 +1,7 @@
 package com.project.noteapp.controller;
 
 import com.project.noteapp.model.User;
-import com.project.noteapp.services.UserServices;
+import com.project.noteapp.services.UserServicesImplementation;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/{user_id}/")
 @AllArgsConstructor
 public class UserController {
-    private UserServices userServices;
+    private UserServicesImplementation userServices;
 
     @PostMapping("new/user")
     public void newUser(@RequestBody User user) {
