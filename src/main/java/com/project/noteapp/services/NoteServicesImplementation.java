@@ -8,6 +8,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -51,5 +53,13 @@ public class NoteServicesImplementation implements NoteServices {
     @Override
     public Note getNoteById(Integer id) {
         return noteRepository.findById(id).get();
+    }
+
+    @Override
+    public List<Note> getAllUserNotes(Integer id) {
+        return noteRepository.findAll()
+                .stream()
+                .filter(note -> note.getUser().getUserId()==id)
+                .collect(Collectors.toList());
     }
 }

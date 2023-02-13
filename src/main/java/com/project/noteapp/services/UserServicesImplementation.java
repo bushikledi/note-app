@@ -1,22 +1,21 @@
 package com.project.noteapp.services;
 
-import com.project.noteapp.model.Note;
+import com.project.noteapp.configuration.PasswordEncoder;
 import com.project.noteapp.model.User;
 import com.project.noteapp.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 @AllArgsConstructor
 public class UserServicesImplementation implements UserServices {
 
     private UserRepository userRepository;
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public void newUser(User user) {
+        user.setPassword(passwordEncoder.encoder().encode(user.getPassword()));
         userRepository.save(user);
     }
 
@@ -39,6 +38,4 @@ public class UserServicesImplementation implements UserServices {
     public User getUserById(Integer id) {
         return userRepository.findById(id).get();
     }
-
-
 }

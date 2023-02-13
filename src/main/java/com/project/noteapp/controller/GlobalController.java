@@ -11,11 +11,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @AllArgsConstructor
 public class GlobalController {
+
+    private UserServicesImplementation userServices;
+
     @GetMapping("/login")
     public String hello() {
         return "loggedIn";
     }
-    private UserServicesImplementation userServices;
+
     @PostMapping("/register")
     public void newUser(@RequestBody User user) {
         userServices.newUser(user);

@@ -25,5 +25,4 @@ public class Note {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-
 }

@@ -22,7 +22,5 @@ public class User {
     private String username;
     private String password;
     private String photo;
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Note> notes;
 
 }
