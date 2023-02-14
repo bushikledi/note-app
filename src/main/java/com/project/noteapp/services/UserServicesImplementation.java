@@ -25,6 +25,12 @@ public class UserServicesImplementation implements UserServices {
     }
 
     @Override
+    public void updateUser(Integer id, User user) {
+        user.setUserId(id);
+        userRepository.save(user);
+    }
+
+    @Override
     public boolean deleteUser(Integer id) {
         try {
             userRepository.deleteById(id);

@@ -33,11 +33,9 @@ public class NoteServicesImplementation implements NoteServices {
 
     @Override
     public void editNote(Integer note_id,Note note) {
-        Note note1  = noteRepository.findById(note_id).get();
-        note1.setNoteName(note.getNoteName());
-        note.setNote(note.getNote());
-        note1.setEditedDate(LocalDate.now());
-        noteRepository.save(note1);
+        note.setNoteId(note_id);
+        note.setEditedDate(LocalDate.now());
+        noteRepository.save(note);
     }
 
     @Override

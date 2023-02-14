@@ -51,6 +51,22 @@ public class NoteController {
         else return null;
     }
 
+    @DeleteMapping("/delete-note/{note_id}")
+    public String deleteNote(@PathVariable Integer note_id, @PathVariable Integer user_id, Principal principal) {
+        if (checkIfAuthorizedUser(user_id, principal)) {
+            try {
+                noteServices.deleteNote(note_id);
+            } catch (Exception e) {
+                return e.getMessage();
+            }
+            return "Note deleted!";
+        }
+        return "Trying to access other User !!!";
+    }
+
+
+
+
     private boolean checkIfAuthorizedUser(Integer id, Principal principal) {
         return principal.getName().equals(userServices.getUserById(id).getUsername());
     }
