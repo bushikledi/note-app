@@ -14,4 +14,6 @@ public interface NoteServices {
     Note getNoteById(Integer id);
 
     List<Note> getAllUserNotes(Integer id);
+
+    List<Note> getNotesByName(Integer user_id, String name);
 }

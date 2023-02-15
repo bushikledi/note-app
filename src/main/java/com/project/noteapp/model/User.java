@@ -19,6 +19,7 @@ public class User {
     private Integer userId;
     private String firstname;
     private String lastname;
+    @Column(unique = true)
     private String username;
     private String password;
     private String photo;
