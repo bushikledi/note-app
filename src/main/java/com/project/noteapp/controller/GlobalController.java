@@ -18,7 +18,7 @@ public class GlobalController {
 
     @GetMapping("/login")
     public String hello() {
-        return "loggedIn";
+        return "login";
     }
 
     @PostMapping("/register")
