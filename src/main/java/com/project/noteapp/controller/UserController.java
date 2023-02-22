@@ -5,20 +5,24 @@ import com.project.noteapp.services.UserServicesImplementation;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.AuthenticatedPrincipal;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
-
 @RestController
-@RequestMapping("api/user/{user_id}")
+@RequestMapping("/api/user")
 @AllArgsConstructor
 public class UserController {
     private UserServicesImplementation userServices;
 
-    @GetMapping
-    public ResponseEntity<User> getUser(@PathVariable Integer user_id) {
-        return new ResponseEntity<>(userServices.getUserById(user_id), HttpStatus.OK);
+    @GetMapping("/home")
+    public ResponseEntity<User> getUser(Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
+        return ResponseEntity.ok(user);
+    }
+
+    @GetMapping("/test")
+    public ResponseEntity<String> testUser() {
+        return ResponseEntity.ok("Test!");
     }
 
     @PostMapping("/update")
