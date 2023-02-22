@@ -1,8 +1,10 @@
 package com.project.noteapp.configuration;
 
 import com.project.noteapp.services.UserDetailsServiceImplementation;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -20,8 +22,9 @@ public class SecurityConfiguration {
     private PasswordEncoder passwordEncoder;
     private JwtTokenFilter jwtTokenFilter;
 
-    public SecurityConfiguration(PasswordEncoder passwordEncoder) {
+    public SecurityConfiguration(PasswordEncoder passwordEncoder,@Lazy JwtTokenFilter jwtTokenFilter) {
         this.passwordEncoder = passwordEncoder;
+        this.jwtTokenFilter = jwtTokenFilter;
     }
 
     @Bean
@@ -45,17 +48,11 @@ public class SecurityConfiguration {
     @Bean
     protected SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-//                .csrf().disable()
+                .csrf().disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/api/**").hasAuthority("USER")
-                .requestMatchers("/register").permitAll()
+                .requestMatchers("/api/auth/**").permitAll()
                 .anyRequest()
                 .authenticated()
-                .and()
-                .formLogin()
-//                .loginPage("/login")
-                .and()
-                .logout()
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

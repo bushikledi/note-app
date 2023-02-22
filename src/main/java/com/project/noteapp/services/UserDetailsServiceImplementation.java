@@ -1,6 +1,5 @@
 package com.project.noteapp.services;
 
-import com.project.noteapp.configuration.UserDetailsImplementation;
 import com.project.noteapp.model.User;
 import com.project.noteapp.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -20,6 +19,6 @@ public class UserDetailsServiceImplementation implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(username).get();
-        return new UserDetailsImplementation(user);
+        return user;
     }
 }
