@@ -19,7 +19,6 @@ public class UserServicesImplementation implements UserServices {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
-
     private final AuthenticationManager authenticationManager;
 
     @Override
@@ -60,6 +59,7 @@ public class UserServicesImplementation implements UserServices {
     @Transactional
     public void updateUser(Integer id, User user) {
         user.setUserId(id);
+        user.setRole(Role.USER);
         userRepository.save(user);
     }
 

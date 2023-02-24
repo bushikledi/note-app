@@ -5,6 +5,7 @@ import com.project.noteapp.model.User;
 import com.project.noteapp.repository.NoteRepository;
 import com.project.noteapp.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,11 +14,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class NoteServicesImplementation implements NoteServices {
 
-    private NoteRepository noteRepository;
-    private UserRepository userRepository;
+    private final NoteRepository noteRepository;
+    private final UserRepository userRepository;
 
     @Override
     @Transactional
