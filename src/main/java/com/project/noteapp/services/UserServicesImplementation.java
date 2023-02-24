@@ -3,8 +3,10 @@ package com.project.noteapp.services;
 import com.project.noteapp.authentication.AuthenticationRequest;
 import com.project.noteapp.authentication.AuthenticationResponse;
 import com.project.noteapp.configuration.PasswordEncoder;
+import com.project.noteapp.model.Note;
 import com.project.noteapp.model.Role;
 import com.project.noteapp.model.User;
+import com.project.noteapp.repository.NoteRepository;
 import com.project.noteapp.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,11 +14,15 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @AllArgsConstructor
 public class UserServicesImplementation implements UserServices {
 
     private final UserRepository userRepository;
+    private final NoteRepository noteRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
@@ -65,13 +71,14 @@ public class UserServicesImplementation implements UserServices {
 
     @Override
     @Transactional
-    public boolean deleteUser(Integer id) {
-        try {
-            userRepository.deleteById(id);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
+    public void deleteUser(Integer id) {
+        User user = userRepository.findById(id).orElseThrow();
+        List<Note> notes = noteRepository.findAll()
+                .stream()
+                .filter(note -> user.equals(note.getUser()))
+                .toList();
+        notes.forEach(note -> noteRepository.deleteById(note.getNoteId()));
+        userRepository.deleteById(id);
     }
 
     @Override

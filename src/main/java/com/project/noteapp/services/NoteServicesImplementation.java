@@ -33,9 +33,12 @@ public class NoteServicesImplementation implements NoteServices {
     @Transactional
     public boolean editNote(Integer note_id, Note note, Integer userId) {
         Note note1 = noteRepository.findById(note_id).orElseThrow();
-        if (note1.getUser().getUserId().equals(userId)) {
+        User user = userRepository.findById(userId).orElseThrow();
+        if (user.equals(note1.getUser())) {
+            note.setUser(user);
             note.setNoteId(note_id);
             note.setEditedDate(LocalDate.now());
+            note.setCreatedDate(note1.getCreatedDate());
             noteRepository.save(note);
             return true;
         } else return false;
@@ -62,18 +65,23 @@ public class NoteServicesImplementation implements NoteServices {
     @Override
     @Transactional(readOnly = true)
     public List<Note> getAllUserNotes(Integer id) {
+        User user = userRepository.findById(id).orElseThrow();
         return noteRepository.findAll()
                 .stream()
-                .filter(note -> note.getUser().getUserId().equals(id))
+                .filter(note -> user.equals(note.getUser()))
                 .collect(Collectors.toList());
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<Note> getNotesByName(Integer user_id, String name) {
-        return noteRepository.findAll()
+        User user = userRepository.findById(user_id).orElseThrow();
+        List<Note> notes = noteRepository.findAll()
                 .stream()
-                .filter(note -> note.getUser().getUserId().equals(user_id) && note.getNoteName().contains(name))
+                .filter(note -> note.getNoteName().contains(name)).toList();
+        return notes
+                .stream()
+                .filter(note -> user.equals(note.getUser()))
                 .collect(Collectors.toList());
     }
 }

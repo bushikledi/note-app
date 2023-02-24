@@ -1,4 +1,4 @@
-package com.project.noteapp.controller;
+package com.project.noteapp.services.controller;
 
 import com.project.noteapp.model.Note;
 import com.project.noteapp.model.User;
@@ -42,21 +42,25 @@ public class NoteController {
         return ResponseEntity.status(OK).body(noteServices.getAllUserNotes(((User) authentication.getPrincipal()).getUserId()));
     }
 
-    @GetMapping("/note/{name}")
+    @GetMapping("/note-name/{name}")
     public ResponseEntity<List<Note>> searchNotes(@PathVariable String name, Authentication authentication) {
         return ResponseEntity.ok(noteServices.getNotesByName(((User) authentication.getPrincipal()).getUserId(), name));
     }
 
-    @GetMapping("/note/{note_id}")
+    @GetMapping("/note-id/{note_id}")
     public ResponseEntity<Note> getNoteById(@PathVariable Integer note_id, Authentication authentication) {
         return ResponseEntity.ok(noteServices.getNoteById(((User) authentication.getPrincipal()).getUserId(), note_id));
     }
 
     @DeleteMapping("/delete/{note_id}")
     public ResponseEntity<Void> deleteNote(@PathVariable Integer note_id, Authentication authentication) {
+        if (
         noteServices.deleteNote(note_id,
-                ((User) authentication.getPrincipal()).getUserId());
+                ((User) authentication.getPrincipal()).getUserId())){
         return new ResponseEntity<>(OK);
+        }else
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
     }
 
 

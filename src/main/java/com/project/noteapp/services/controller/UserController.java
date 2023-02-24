@@ -1,4 +1,4 @@
-package com.project.noteapp.controller;
+package com.project.noteapp.services.controller;
 
 import com.project.noteapp.model.User;
 import com.project.noteapp.services.UserServicesImplementation;
