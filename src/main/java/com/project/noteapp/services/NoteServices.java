@@ -1,20 +1,21 @@
 package com.project.noteapp.services;
 
 import com.project.noteapp.model.Note;
+import com.project.noteapp.model.User;
 
 import java.util.List;
 
 public interface NoteServices {
-    void newNote(Integer id, Note note);
+    void newNote(Note note, User user);
 
-    boolean editNote(Integer note_id, Note note, Integer userId);
+    boolean editNote(Integer note_id, Note note, User user);
 
-    boolean deleteNote(Integer id, Integer userId);
+    boolean deleteNote(Integer noteId, User user);
 
-    Note getNoteById(Integer id, Integer noteId);
+    Note getNoteById(User user, Integer noteId);
 
-    List<Note> getAllUserNotes(Integer id);
+    List<Note> getAllUserNotes(User user);
 
-    List<Note> getNotesByName(Integer user_id, String name);
+    List<Note> getNotesByName(User user, String name);
 
 }

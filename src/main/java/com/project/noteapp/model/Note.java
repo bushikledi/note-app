@@ -22,7 +22,6 @@ public class Note {
     private String note;
     private LocalDate createdDate;
     private LocalDate editedDate;
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @Column(name = "user_id")
+    private Integer userId;
 }

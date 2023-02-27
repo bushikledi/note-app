@@ -3,27 +3,23 @@ package com.project.noteapp.services;
 import com.project.noteapp.model.Note;
 import com.project.noteapp.model.User;
 import com.project.noteapp.repository.NoteRepository;
-import com.project.noteapp.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class NoteServicesImplementation implements NoteServices {
 
     private final NoteRepository noteRepository;
-    private final UserRepository userRepository;
 
     @Override
     @Transactional
-    public void newNote(Integer id, Note note) {
-        User user = userRepository.findById(id).orElseThrow();
-        note.setUser(user);
+    public void newNote(Note note, User user) {
+        note.setUserId(user.getUserId());
         note.setCreatedDate(LocalDate.now());
         note.setEditedDate(LocalDate.now());
         noteRepository.save(note);
@@ -31,14 +27,12 @@ public class NoteServicesImplementation implements NoteServices {
 
     @Override
     @Transactional
-    public boolean editNote(Integer note_id, Note note, Integer userId) {
-        Note note1 = noteRepository.findById(note_id).orElseThrow();
-        User user = userRepository.findById(userId).orElseThrow();
-        if (user.equals(note1.getUser())) {
-            note.setUser(user);
-            note.setNoteId(note_id);
+    public boolean editNote(Integer noteId, Note modNote, User user) {
+        Note note = user.getNotes().get(noteId);
+        if (note != null) {
+            note.setNote(modNote.getNote());
+            note.setNoteName(modNote.getNoteName());
             note.setEditedDate(LocalDate.now());
-            note.setCreatedDate(note1.getCreatedDate());
             noteRepository.save(note);
             return true;
         } else return false;
@@ -46,42 +40,31 @@ public class NoteServicesImplementation implements NoteServices {
 
     @Override
     @Transactional
-    public boolean deleteNote(Integer id, Integer userId) {
-        Note note = noteRepository.findById(id).orElseThrow();
-        if (note.getUser().getUserId().equals(userId)) {
-            noteRepository.deleteById(id);
+    public boolean deleteNote(Integer noteId, User user) {
+        Note note = user.getNotes().get(noteId);
+        if (note != null) {
+            noteRepository.deleteById(noteId);
             return true;
         } else return false;
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Note getNoteById(Integer id, Integer noteId) {
-        return noteRepository.findById(noteId)
-                .filter(note1 -> note1.getUser().getUserId().equals(id))
-                .orElseThrow();
+    public Note getNoteById(User user, Integer noteId) {
+        return user.getNotes().get(noteId);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<Note> getAllUserNotes(Integer id) {
-        User user = userRepository.findById(id).orElseThrow();
-        return noteRepository.findAll()
-                .stream()
-                .filter(note -> user.equals(note.getUser()))
-                .collect(Collectors.toList());
+    public List<Note> getAllUserNotes(User user) {
+        return user.getNotes();
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<Note> getNotesByName(Integer user_id, String name) {
-        User user = userRepository.findById(user_id).orElseThrow();
-        List<Note> notes = noteRepository.findAll()
+    public List<Note> getNotesByName(User user, String name) {
+        return user.getNotes()
                 .stream()
                 .filter(note -> note.getNoteName().contains(name)).toList();
-        return notes
-                .stream()
-                .filter(note -> user.equals(note.getUser()))
-                .collect(Collectors.toList());
     }
 }
