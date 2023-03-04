@@ -74,16 +74,16 @@ public class UserServicesImplementation implements UserServices {
 
     @Override
     @Transactional
-    public void updateUser(User user, User modUser) {
+    public void updateUser(User user, User update) {
         try {
-            if (StringUtils.hasText(modUser.getLastname())) {
-                user.setLastname(modUser.getLastname());
+            if (StringUtils.hasText(update.getLastname())) {
+                user.setLastname(update.getLastname());
             }
-            if (StringUtils.hasText(modUser.getPhoto())) {
-                user.setPhoto(modUser.getPhoto());
+            if (StringUtils.hasText(update.getPhoto())) {
+                user.setPhoto(update.getPhoto());
             }
-            if (StringUtils.hasText(modUser.getFirstname())) {
-                user.setFirstname(modUser.getFirstname());
+            if (StringUtils.hasText(update.getFirstname())) {
+                user.setFirstname(update.getFirstname());
             }
             userRepository.save(user);
         } catch (DataAccessException e) {

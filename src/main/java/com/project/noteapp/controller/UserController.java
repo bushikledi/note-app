@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import static org.springframework.http.HttpStatus.OK;
+
 @RestController
 @RequestMapping("/api/user")
 @RequiredArgsConstructor
@@ -20,15 +22,15 @@ public class UserController {
 
     @PutMapping("/update")
     public ResponseEntity<Void> updateUser(@AuthenticationPrincipal final User user,
-                                           @RequestBody User updateUser) {
-        userServices.updateUser(user, updateUser);
-        return ResponseEntity.ok().build();
+                                           @RequestBody User update) {
+        userServices.updateUser(user, update);
+        return new ResponseEntity<>(OK);
 
     }
 
     @DeleteMapping("/delete")
     public ResponseEntity<Void> deleteUser(@AuthenticationPrincipal final User user) {
         userServices.deleteUser(user);
-        return ResponseEntity.ok().build();
+        return new ResponseEntity<>(OK);
     }
 }

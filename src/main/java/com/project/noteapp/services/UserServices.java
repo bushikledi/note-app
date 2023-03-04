@@ -7,7 +7,7 @@ import com.project.noteapp.model.User;
 public interface UserServices {
     AuthenticationResponse saveUser(User user);
 
-    void updateUser(User user, User modUser);
+    void updateUser(User user, User update);
 
     void deleteUser(User user);
 

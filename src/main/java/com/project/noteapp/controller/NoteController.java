@@ -4,13 +4,13 @@ import com.project.noteapp.model.Note;
 import com.project.noteapp.model.User;
 import com.project.noteapp.services.NoteServices;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
@@ -24,20 +24,15 @@ public class NoteController {
     public ResponseEntity<Void> newNote(@RequestBody Note note,
                                         @AuthenticationPrincipal final User user) {
         noteServices.newNote(note, user);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
-
+        return new ResponseEntity<>(CREATED);
     }
 
-    @PostMapping("/edit/{note_id}")
+    @PostMapping("/edit/{id}")
     public ResponseEntity<Void> editNote(@RequestBody Note note,
-                                         @PathVariable("note_id") Integer note_id,
+                                         @PathVariable("id") Integer id,
                                          @AuthenticationPrincipal final User user) {
-        if (noteServices.editNote(note_id, note, user)) {
-            return ResponseEntity.ok().build();
-
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        noteServices.editNote(id, note, user);
+        return new ResponseEntity<>(OK);
     }
 
     @GetMapping("/all")
@@ -51,20 +46,17 @@ public class NoteController {
         return ResponseEntity.ok(noteServices.getNotesByName(user, name));
     }
 
-    @GetMapping("/search/id/{note_id}")
-    public ResponseEntity<Note> getNoteById(@PathVariable Integer note_id,
+    @GetMapping("/search/id/{id}")
+    public ResponseEntity<Note> getNoteById(@PathVariable Integer id,
                                             @AuthenticationPrincipal final User user) {
-        return ResponseEntity.ok(noteServices.getNoteById(user, note_id));
+        return ResponseEntity.ok(noteServices.getNoteById(user, id));
     }
 
-    @DeleteMapping("/delete/{note_id}")
-    public ResponseEntity<Void> deleteNote(@PathVariable Integer note_id,
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> deleteNote(@PathVariable Integer id,
                                            @AuthenticationPrincipal final User user) {
-        if (noteServices.deleteNote(note_id, user)) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        noteServices.deleteNote(id, user);
+        return ResponseEntity.noContent().build();
     }
 
 

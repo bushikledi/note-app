@@ -19,31 +19,31 @@ public class NoteServicesImplementation implements NoteServices {
     @Override
     @Transactional
     public void newNote(Note note, User user) {
-        note.setUserId(user.getUserId());
         note.setCreatedDate(LocalDate.now());
         note.setEditedDate(LocalDate.now());
+        note.setUserId(user.getUserId());
+        noteRepository.save(note);
         noteRepository.save(note);
     }
 
     @Override
     @Transactional
-    public boolean editNote(Integer noteId, Note modNote, User user) {
+    public void editNote(Integer noteId, Note modNote, User user) {
         Note note = noteRepository.findByNoteIdAndUserId(noteId, user.getUserId())
                 .orElseThrow(() -> new IllegalArgumentException("Note not found for ID "
                         + noteId + " and user ID " + user.getUserId()));
         note.setNote(modNote.getNote());
         note.setNoteName(modNote.getNoteName());
         note.setEditedDate(LocalDate.now());
-        return true;
+        noteRepository.save(note);
     }
 
     @Override
     @Transactional
-    public boolean deleteNote(Integer noteId, User user) {
+    public void deleteNote(Integer noteId, User user) {
         noteRepository.deleteByNoteIdAndUserId(noteId, user.getUserId())
                 .orElseThrow(() -> new IllegalArgumentException("Note not found for ID "
                         + noteId + " and user ID " + user.getUserId()));
-        return noteRepository.existsById(noteId);
     }
 
     @Override
