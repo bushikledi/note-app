@@ -21,19 +21,23 @@ public class NoteController {
     private final NoteServices noteServices;
 
     @PostMapping("/new")
-    public ResponseEntity<Void> newNote(@RequestBody Note note, @AuthenticationPrincipal final User user) {
+    public ResponseEntity<Void> newNote(@RequestBody Note note,
+                                        @AuthenticationPrincipal final User user) {
         noteServices.newNote(note, user);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
 
     }
 
     @PostMapping("/edit/{note_id}")
-    public ResponseEntity<Void> editNote(@RequestBody Note note, @PathVariable("note_id") Integer note_id,
+    public ResponseEntity<Void> editNote(@RequestBody Note note,
+                                         @PathVariable("note_id") Integer note_id,
                                          @AuthenticationPrincipal final User user) {
         if (noteServices.editNote(note_id, note, user)) {
-            return new ResponseEntity<>(HttpStatus.OK);
-        } else
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return ResponseEntity.ok().build();
+
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping("/all")
@@ -41,13 +45,13 @@ public class NoteController {
         return ResponseEntity.status(OK).body(noteServices.getAllUserNotes(user));
     }
 
-    @GetMapping("/note-name/{name}")
+    @GetMapping("/search/name/{name}")
     public ResponseEntity<List<Note>> searchNotes(@PathVariable String name,
                                                   @AuthenticationPrincipal final User user) {
         return ResponseEntity.ok(noteServices.getNotesByName(user, name));
     }
 
-    @GetMapping("/note-id/{note_id}")
+    @GetMapping("/search/id/{note_id}")
     public ResponseEntity<Note> getNoteById(@PathVariable Integer note_id,
                                             @AuthenticationPrincipal final User user) {
         return ResponseEntity.ok(noteServices.getNoteById(user, note_id));
@@ -56,12 +60,11 @@ public class NoteController {
     @DeleteMapping("/delete/{note_id}")
     public ResponseEntity<Void> deleteNote(@PathVariable Integer note_id,
                                            @AuthenticationPrincipal final User user) {
-        if (
-                noteServices.deleteNote(note_id, user)) {
-            return new ResponseEntity<>(OK);
-        } else
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-
+        if (noteServices.deleteNote(note_id, user)) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
 

@@ -1,6 +1,10 @@
 package com.project.noteapp.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -21,10 +25,21 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Integer userId;
+    @NotNull
+    @Size(min = 2, max = 30)
     private String firstname;
+    @NotNull
+    @Size(min = 2, max = 30)
     private String lastname;
     @Column(unique = true)
+    @NotNull
+    @Size(min = 3, max = 30)
     private String username;
+    @NotBlank
+    @Pattern(regexp = "^(?=.*[0-9])"
+            + "(?=.*[a-z])(?=.*[A-Z])"
+            + "(?=.*[@#$%^&+=])"
+            + "(?=\\S+$).{8,}$")
     private String password;
     private String photo;
     @Enumerated(EnumType.STRING)

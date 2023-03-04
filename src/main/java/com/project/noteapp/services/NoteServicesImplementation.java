@@ -28,43 +28,40 @@ public class NoteServicesImplementation implements NoteServices {
     @Override
     @Transactional
     public boolean editNote(Integer noteId, Note modNote, User user) {
-        Note note = user.getNotes().get(noteId);
-        if (note != null) {
-            note.setNote(modNote.getNote());
-            note.setNoteName(modNote.getNoteName());
-            note.setEditedDate(LocalDate.now());
-            noteRepository.save(note);
-            return true;
-        } else return false;
+        Note note = noteRepository.findByNoteIdAndUserId(noteId, user.getUserId())
+                .orElseThrow(() -> new IllegalArgumentException("Note not found for ID "
+                        + noteId + " and user ID " + user.getUserId()));
+        note.setNote(modNote.getNote());
+        note.setNoteName(modNote.getNoteName());
+        note.setEditedDate(LocalDate.now());
+        return true;
     }
 
     @Override
     @Transactional
     public boolean deleteNote(Integer noteId, User user) {
-        Note note = user.getNotes().get(noteId);
-        if (note != null) {
-            noteRepository.deleteById(noteId);
-            return true;
-        } else return false;
+        noteRepository.deleteByNoteIdAndUserId(noteId, user.getUserId())
+                .orElseThrow(() -> new IllegalArgumentException("Note not found for ID "
+                        + noteId + " and user ID " + user.getUserId()));
+        return noteRepository.existsById(noteId);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Note getNoteById(User user, Integer noteId) {
-        return user.getNotes().get(noteId);
+        return noteRepository.findByNoteIdAndUserId(noteId, user.getUserId())
+                .orElseThrow(() -> new IllegalArgumentException("Note not found"));
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<Note> getAllUserNotes(User user) {
-        return user.getNotes();
+        return noteRepository.findByUserIdOrderByEditedDate(user.getUserId());
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<Note> getNotesByName(User user, String name) {
-        return user.getNotes()
-                .stream()
-                .filter(note -> note.getNoteName().contains(name)).toList();
+        return noteRepository.findByUserIdAndNoteNameContainingIgnoreCaseOrderByNoteName(user.getUserId(), name);
     }
 }
