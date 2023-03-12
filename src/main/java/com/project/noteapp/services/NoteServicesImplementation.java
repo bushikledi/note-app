@@ -18,32 +18,51 @@ public class NoteServicesImplementation implements NoteServices {
 
     @Override
     @Transactional
-    public void newNote(Note note, User user) {
-        note.setCreatedDate(LocalDate.now());
-        note.setEditedDate(LocalDate.now());
-        note.setUserId(user.getUserId());
-        noteRepository.save(note);
-        noteRepository.save(note);
+    public boolean newNote(Note note, User user) {
+        try {
+            note.setCreatedDate(LocalDate.now());
+            note.setEditedDate(LocalDate.now());
+            note.setUserId(user.getUserId());
+            noteRepository.save(note);
+            noteRepository.save(note);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+
     }
 
     @Override
     @Transactional
-    public void editNote(Integer noteId, Note modNote, User user) {
-        Note note = noteRepository.findByNoteIdAndUserId(noteId, user.getUserId())
-                .orElseThrow(() -> new IllegalArgumentException("Note not found for ID "
-                        + noteId + " and user ID " + user.getUserId()));
-        note.setNote(modNote.getNote());
-        note.setNoteName(modNote.getNoteName());
-        note.setEditedDate(LocalDate.now());
-        noteRepository.save(note);
+    public boolean editNote(Integer noteId, Note modNote, User user) {
+        try {
+            Note note = noteRepository.findByNoteIdAndUserId(noteId, user.getUserId())
+                    .orElseThrow(() -> new IllegalArgumentException("Note not found for ID "
+                            + noteId + " and user ID " + user.getUserId()));
+            note.setNote(modNote.getNote());
+            note.setNoteName(modNote.getNoteName());
+            note.setEditedDate(LocalDate.now());
+            noteRepository.save(note);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+
+
     }
 
     @Override
     @Transactional
-    public void deleteNote(Integer noteId, User user) {
-        noteRepository.deleteByNoteIdAndUserId(noteId, user.getUserId())
-                .orElseThrow(() -> new IllegalArgumentException("Note not found for ID "
-                        + noteId + " and user ID " + user.getUserId()));
+    public boolean deleteNote(Integer noteId, User user) {
+        try {
+            noteRepository.deleteByNoteIdAndUserId(noteId, user.getUserId())
+                    .orElseThrow(() -> new IllegalArgumentException("Note not found for ID "
+                            + noteId + " and user ID " + user.getUserId()));
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+
     }
 
     @Override
